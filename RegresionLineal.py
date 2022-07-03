@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 from sklearn import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.linear_model import LinearRegression
 
 def RegLin(data):
     #SE SOLICITAN LOS DATOS
@@ -24,7 +23,7 @@ def RegLin(data):
     correlativo = st.number_input('Inserte la prediccion', step = 1)
 
     if st.button('Calcular Resultados'):
-        st.write("## Paso 4: Resultados")
+        st.write("# Paso 4: Resultados")
         #SE REALIZAN LOS CALCULOS PARA LA REGRESION LINEAL
         x = np.asarray(data[ejeX]).reshape(-1,1)
         y = data[ejeY]
@@ -41,7 +40,7 @@ def RegLin(data):
         coeficienteDeterminacion = r2_score(y, y_pred)
 
         
-        with st.expander("Graficar puntos"):
+        with st.expander("Grafica de Puntos"):
             figura, ax = plt.subplots()
             ax.scatter(x, y, color='black')
             plt.title('Regresio lineal\nCoeficiente de regresion: ' + str(coeficiente))
@@ -50,7 +49,7 @@ def RegLin(data):
             plt.grid()
             st.pyplot(figura)
 
-        with st.expander("Grafica de tendencia"):
+        with st.expander("Grafica de Tendencia"):
             figura, ax = plt.subplots()
             ax.scatter(x, y, color='black')
             ax.plot(x, y_pred, color='blue', linewidth=3)
@@ -60,14 +59,14 @@ def RegLin(data):
             plt.grid()
             st.pyplot(figura)
         
-        with st.expander("Funcion de tendencia"):
+        with st.expander("Funcion de Tendencia"):
             #y = mx + b
             strCoeficiente = str(coeficiente)
             strCoeficiente = strCoeficiente.replace("[", "")
             strCoeficiente = strCoeficiente.replace("]", "")
             st.info("**F(x)** = " + strCoeficiente + "**x** + " + str(intercepto))
 
-        with st.expander("Prediccion de tendencia"):
+        with st.expander("Prediccion de Tendencia"):
             strPrediccion = str(prediccion)
             strPrediccion = strPrediccion.replace("[", "")
             strPrediccion = strPrediccion.replace("]", "")
