@@ -1,12 +1,13 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn import preprocessing
 from sklearn import tree
 
 def ArbDec(data):
-    
+
     variablesEntrada = list()
 
     opcion = st.radio(
@@ -40,7 +41,12 @@ def ArbDec(data):
         #Se prepara un arreglo con los dataFrame de las variables seleccionadas
         dataFrameEntrada = list()
         for variable in variablesEntrada:
-            dataFrameEntrada.append(data[variable])
+            temporal = data[variable]
+            temporal = np.asarray(temporal)
+            dataFrameEntrada.append(temporal)
+        
+        dataFrameEntrada = np.asarray(dataFrameEntrada)
+        #Salida
         dataFrameSalida = data[variableSalida]
 
         if agree:
@@ -51,31 +57,44 @@ def ArbDec(data):
             for dato in dataFrameEntrada:
                 encoded.append(le.fit_transform(dato))
             label = le.fit_transform(dataFrameSalida)
+            #st.write('Ecoded:', encoded)
 
             # Combinando los atributos en una lista simple de tuplas (No se toma en concideracion la tupla de N o P)
             features = list()
-            for i in range(len(encoded)):
+            longitudInterna = len(encoded[0])
+            for i in range(longitudInterna):
                 listTemporal = list()
                 for enc in encoded:
                     listTemporal.append(enc[i])
-                    #st.write('Dato: ', enc[i])
                 features.append(listTemporal)
+
+            features = np.asarray(features)
+
+            #st.write(features)
             
             # Se encaja con el modelo (Aca se pasa como segundo parametro la tupla de N o P)
             clf = DecisionTreeClassifier().fit(features, label)
 
+            with st.expander("Prediccion de la Tendencia"):
+                fig2, ax2 = plt.subplots()
+                plot_tree(clf, filled=True)
+                plt.figure(figsize=(100,100))
+                st.pyplot(fig2)
+
         else:
             features = list()
-            for i in range(len(dataFrameEntrada)):
+            longitudInterna = len(dataFrameEntrada[0])
+            for i in range(longitudInterna):
                 listTemporal = list()
                 for dfe in dataFrameEntrada:
-                    listTemporal.append(int(dfe[i]))
+                    listTemporal.append(dfe[i])
                 features.append(listTemporal)
+            features = np.asarray(features)
             
             # Se encaja con el modelo (Aca se pasa como segundo parametro la tupla de N o P)
             clf = DecisionTreeClassifier().fit(features, dataFrameSalida)
             
-            with st.expander("Prediccion de la Tendencia"):
+            with st.expander("Grafica del Arbol"):
                 fig2, ax2 = plt.subplots()
                 plot_tree(clf, filled=True)
                 plt.figure(figsize=(100,100))

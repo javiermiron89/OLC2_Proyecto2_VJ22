@@ -1,6 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 from sklearn import preprocessing
 from sklearn.naive_bayes import GaussianNB
 
@@ -57,12 +58,15 @@ def ClaGau(data):
 
         model = GaussianNB()
 
-        
-
         #Se prepara un arreglo con los dataFrame de las variables seleccionadas
         dataFrameEntrada = list()
         for variable in variablesEntrada:
-            dataFrameEntrada.append(data[variable])
+            temporal = data[variable]
+            temporal = np.asarray(temporal)
+            dataFrameEntrada.append(temporal)
+        dataFrameEntrada = np.asarray(dataFrameEntrada)
+
+        #Se preapra el arreglo de salida
         dataFrameSalida = data[variableSalida]
         
         if agree:
@@ -76,21 +80,28 @@ def ClaGau(data):
 
             # Combinando los atributos en una lista simple de tuplas (No se toma en concideracion la tupla de N o P)
             features = list()
-            for i in range(len(encoded)):
+            longitudInterna = len(encoded[0])
+            for i in range(longitudInterna):
                 listTemporal = list()
                 for enc in encoded:
                     listTemporal.append(enc[i])
-                    #st.write('Dato: ', enc[i])
                 features.append(listTemporal)
             
+            features = np.asarray(features)
+
+            st.write(features)
+
             model.fit(features, label)
         else:
             features = list()
-            for i in range(len(dataFrameEntrada)):
+            longitudInterna = len(dataFrameEntrada[0])
+            for i in range(longitudInterna):
                 listTemporal = list()
                 for dfe in dataFrameEntrada:
                     listTemporal.append(dfe[i])
                 features.append(listTemporal)
+            features = np.asarray(features)
+
             model.fit(features, dataFrameSalida)
 
         # Crear el clasificador Gaussiano
