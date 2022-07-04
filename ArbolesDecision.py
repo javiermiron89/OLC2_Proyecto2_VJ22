@@ -1,11 +1,12 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn import preprocessing
-from sklearn.naive_bayes import GaussianNB
+from sklearn import tree
 
-def ClaGau(data):
-
+def ArbDec(data):
+    
     variablesEntrada = list()
 
     opcion = st.radio(
@@ -29,42 +30,19 @@ def ClaGau(data):
     )
 
     agree = st.checkbox('¿Desea utilizar LabelEncoder?')
-    
-    st.write("## Ingreso de valores")
-
-    if opcion == 'Todas':
-        variablesEntrada.remove(variableSalida)
-    
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.write("# Valores a ingresar:")
-        st.write("# " + str(len(variablesEntrada)))
-
-    with col2:
-        listaValores = list()
-        valoresRestantes = len(variablesEntrada)
-        for i in range(valoresRestantes):
-            valor = st.number_input('Inserte el valor ' + str(i) + ':', step = 1, key=i)
-            listaValores.append(valor)
-            valoresRestantes -= 1
-
-        #st.write(listaValores)
-
 
     if st.button('Calcular Resultados'):
         st.write("# Paso 4: Resultados")
 
-        model = GaussianNB()
-
+        if opcion == 'Todas':
+            variablesEntrada.remove(variableSalida)
         
-
         #Se prepara un arreglo con los dataFrame de las variables seleccionadas
         dataFrameEntrada = list()
         for variable in variablesEntrada:
             dataFrameEntrada.append(data[variable])
         dataFrameSalida = data[variableSalida]
-        
+
         if agree:
             # Se crea el Codificador
             le = preprocessing.LabelEncoder()
@@ -83,21 +61,22 @@ def ClaGau(data):
                     #st.write('Dato: ', enc[i])
                 features.append(listTemporal)
             
-            model.fit(features, label)
+            # Se encaja con el modelo (Aca se pasa como segundo parametro la tupla de N o P)
+            clf = DecisionTreeClassifier().fit(features, label)
+
         else:
             features = list()
             for i in range(len(dataFrameEntrada)):
                 listTemporal = list()
                 for dfe in dataFrameEntrada:
-                    listTemporal.append(dfe[i])
+                    listTemporal.append(int(dfe[i]))
                 features.append(listTemporal)
-            model.fit(features, dataFrameSalida)
-
-        # Crear el clasificador Gaussiano
-        predicted = model.predict([listaValores])
-
-        with st.expander("Prediccion de la Tendencia"):
-            strPredicted = str(predicted)
-            strPredicted = strPredicted.replace("[", "")
-            strPredicted = strPredicted.replace("]", "")
-            st.success('Valor de prediccion: ' + strPredicted)
+            
+            # Se encaja con el modelo (Aca se pasa como segundo parametro la tupla de N o P)
+            clf = DecisionTreeClassifier().fit(features, dataFrameSalida)
+            
+            with st.expander("Prediccion de la Tendencia"):
+                fig2, ax2 = plt.subplots()
+                plot_tree(clf, filled=True)
+                plt.figure(figsize=(100,100))
+                st.pyplot(fig2)

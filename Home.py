@@ -4,6 +4,7 @@ import numpy as np
 import RegresionLineal as rl
 import RegresionPolinomial as rp
 import ClasificadorGaussiano as cg
+import ArbolesDecision as ad
 
 #Variables Globales
 df = ""
@@ -58,4 +59,5 @@ if paso2:
         rp.RegPol(df)
     elif option == "Clasificador Gaussiano":
         cg.ClaGau(df)
-
+    elif option == "Clasificador de arboles de decision":
+        ad.ArbDec(df)
