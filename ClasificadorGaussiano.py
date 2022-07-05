@@ -100,7 +100,7 @@ def ClaGau(data):
             
             features = np.asarray(features)
 
-            st.write(features)
+            #st.write(features)
 
             model.fit(features, label)
         else:
