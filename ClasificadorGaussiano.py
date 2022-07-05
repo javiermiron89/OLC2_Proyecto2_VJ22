@@ -45,12 +45,23 @@ def ClaGau(data):
     with col2:
         listaValores = list()
         valoresRestantes = len(variablesEntrada)
+        cadena = st.text_input('Inserte los valores (separados por coma)', '')
+
+        if cadena != '':
+            auxiliar = cadena.split(",")
+            st.info("**Valores restantes: " + str(valoresRestantes-len(auxiliar)) + "**")
+            mapeo = list(map(int,auxiliar))
+            mapeo = np.array(mapeo)
+            listaValores = np.asarray(mapeo)
+            
+        """
         for i in range(valoresRestantes):
             valor = st.number_input('Inserte el valor ' + str(i) + ':', step = 1, key=i)
             listaValores.append(valor)
             valoresRestantes -= 1
 
         #st.write(listaValores)
+        """
 
 
     if st.button('Calcular Resultados'):
